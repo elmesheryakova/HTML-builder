@@ -13,8 +13,8 @@ readdir(folderPath, {withFileTypes: true})
 
         fs.stat(filePath, (err, stats) => {
           if (err) throw err;
-          const size = stats.size/1024;
-          console.log(`${el.name.split('.')[0]} - ${file.slice(1)} - ${size}kb`);
+          const size = stats.size;
+          console.log(`${el.name.split('.')[0]} - ${file.slice(1)} - ${size} b`);
         });
       }
     });
