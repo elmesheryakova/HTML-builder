@@ -1,22 +1,27 @@
 const fs = require('fs');
 const path = require('path');
-const {readdir} = require('fs/promises');
+const fsPromise = require('fs/promises');
 
-const bundle = path.join(__dirname, 'project-dist', 'bundle.css');
-const folderStyles = path.join(__dirname, 'styles');
+
+const bundle = path.resolve(__dirname, 'project-dist', 'bundle.css');
+const folderStyles = path.resolve(__dirname, 'styles');
 const writeStream = fs.createWriteStream(bundle);
 
-
-readdir(folderStyles, {withFileTypes: true})
-  .then((result, err) => {
-    if (err) throw err;
-    result.forEach(el=>{
-      const filePath = path.join(folderStyles, el.name);
-      const file = path.extname(el.name);
-         
-      if (el.isFile() && file === '.css') {
-        const readStream = fs.createReadStream(filePath);
-        readStream.pipe(writeStream);
+async function bundleCSS() {
+  try{
+    const files = await fsPromise.readdir(folderStyles, {withFileTypes: true});
+    files.forEach(el => {
+      if(el.isFile()) {
+        const filePath = path.resolve(folderStyles, el.name);
+        if (path.extname(filePath) === '.css') {
+          const readStream = fs.createReadStream(filePath);
+          readStream.pipe(writeStream, {end: false});
+        }
       }
-    });   
-  });
+    });
+  } catch(err){
+    console.log(err);
+  }
+
+}
+bundleCSS();
