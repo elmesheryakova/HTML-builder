@@ -10,11 +10,10 @@ readdir(folderPath, {withFileTypes: true})
       if (el.isFile()) {
         const filePath = path.join(folderPath, el.name);
         const file = path.extname(el.name);
-
         fs.stat(filePath, (err, stats) => {
           if (err) throw err;
-          const size = stats.size;
-          console.log(`${el.name.split('.')[0]} - ${file.slice(1)} - ${size} b`);
+          const size = stats.size/1024;
+          console.log(`${el.name.split('.')[0]} - ${file.slice(1)} - ${size.toFixed(3)}KB`);
         });
       }
     });
